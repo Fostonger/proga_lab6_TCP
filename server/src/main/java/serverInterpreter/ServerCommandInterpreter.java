@@ -4,6 +4,7 @@ import commands.*;
 import queueManager.PriorityQueueManageable;
 import serverCommands.ServerExecuteScript;
 import serverCommands.ServerExit;
+import transportShells.ClientRequest;
 import transportShells.CommandShell;
 import utils.RouteCreatable;
 import utils.RouteFactory;
@@ -81,12 +82,12 @@ public class ServerCommandInterpreter {
      * fetches command from input channel and executes the command
      */
     public String fetchCommand() {
-        CommandShell commandShell = (CommandShell) clientInput.getObject();
-        if (commandShell == null)
+        ClientRequest request = (ClientRequest) clientInput.getObject();
+        if (request == null)
             return "Client returned object, that cannot be casted to command\n";
-        AbstractCommand command = commands.get(commandShell.getCommandName());
-        routeCreator.setContainer(commandShell.getContainer());
-        return command.execute(commandShell.getArgument());
+        AbstractCommand command = commands.get(request.getCommandShell().getCommandName());
+        routeCreator.setContainer(request.getCommandShell().getContainer());
+        return command.execute(request.getCommandShell().getArgument());
     }
 }
 
