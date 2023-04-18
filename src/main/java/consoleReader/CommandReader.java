@@ -3,7 +3,7 @@ package consoleReader;
 import java.io.*;
 import java.util.Scanner;
 
-public class CommandReader implements CommandReaderable, OutputWritable {
+public class CommandReader implements CommandReadable, OutputWritable {
     private final Scanner commandScanner;
     private final BufferedWriter outputWriter;
 

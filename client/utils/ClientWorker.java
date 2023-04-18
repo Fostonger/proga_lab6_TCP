@@ -30,7 +30,7 @@ public class ClientWorker implements InterpreterSwitchable {
              netWorker = new ClientNetWorker(clientSocket);
         } catch (IOException e) {
             readerWriter.writeMessage("Couldn't get input and output streams from socket, sorry!");
-            System.exit(0);
+            return null;
         }
         ClientRouteCreatable routeCreator = new ClientRouteFactory(propertiesReceiver);
         ClientWorker worker = new ClientWorker(readerWriter, netWorker);

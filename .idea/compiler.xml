@@ -11,6 +11,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lab6" target="16" />
+      <module name="proga_lab6" target="19" />
     </bytecodeTargetLevel>
   </component>
 </project>

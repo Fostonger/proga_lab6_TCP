@@ -82,3 +82,4 @@ fabric.properties
 # unnecessary to trach
 script.txt
 routes.json
+logs/
