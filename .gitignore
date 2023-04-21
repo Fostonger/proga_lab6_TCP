@@ -83,3 +83,6 @@ fabric.properties
 script.txt
 routes.json
 logs/
+
+# compiled classes
+target/
