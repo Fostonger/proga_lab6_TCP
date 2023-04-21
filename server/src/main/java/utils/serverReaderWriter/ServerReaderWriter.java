@@ -1,6 +1,7 @@
 package utils.serverReaderWriter;
 import org.apache.logging.log4j.Logger;
 
+import transportShells.ClientRequest;
 import transportShells.CommandShell;
 import transportShells.ServerResponse;
 
@@ -30,8 +31,8 @@ public class ServerReaderWriter implements ServerReadableWritable {
             ByteArrayInputStream baos = new ByteArrayInputStream(buffer.array());
             ObjectInputStream ois = new ObjectInputStream(baos);
             Object receivedObj = ois.readObject();
-            if (((CommandShell) receivedObj) != null)
-                logger.info("Command: " + ((CommandShell) receivedObj).getCommandName());
+            if (((ClientRequest) receivedObj) != null)
+                logger.info("Command: " + ((ClientRequest) receivedObj).getCommandShell().getCommandName());
             else
                 logger.info("Couldn't parse command from received object");
             return receivedObj;

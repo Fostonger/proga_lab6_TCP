@@ -34,7 +34,7 @@ public class ClientQueueManager implements PriorityQueueManageable {
     @Override
     public void updateById(int id, Route newRoute) throws NoSuchElementException { routeArgument = newRoute; }
     @Override
-    public boolean containsId(int id) { return false; }
+    public boolean containsId(int id) { return true; }
     @Override
     public void save() throws IOException {}
     @Override
@@ -48,5 +48,5 @@ public class ClientQueueManager implements PriorityQueueManageable {
     @Override
     public void removeById(int id) throws NoSuchElementException {}
     @Override
-    public Map<Integer, Route> getIds() { return null; }
+    public int generateId() { return 1; }
 }

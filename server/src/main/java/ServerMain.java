@@ -1,6 +1,6 @@
+import database.JDBCWorker;
+import database.PriorityQueueJDBCConnector;
 import network.*;
-import fileIO.JSONDecoder;
-import fileIO.JSONEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import queueManager.PriorityQueueManager;
@@ -10,24 +10,28 @@ import utils.serverReaderWriter.ServerReadableWritable;
 import utils.serverReaderWriter.ServerReaderWriter;
 
 import java.io.*;
-import java.net.SocketException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.sql.SQLException;
 import java.util.Iterator;
 
 public class ServerMain {
     public static void main(String[] args) {
         Logger logger = LogManager.getLogger();
         logger.info("Starting server");
-        ServerReadableWritable readerWriter;
-        PriorityQueueManager queueManager = null;
-        Selector selector = new NetworkConnector(logger).getConnections(8080);
+        PriorityQueueManager queueManager;
         try {
-            queueManager = new PriorityQueueManager(new JSONDecoder(), new JSONEncoder(), "routes.json");
-        } catch (IOException e) {
-            logger.error("Couldn't get saved routes: " + e.getMessage());
+            queueManager = PriorityQueueManager.InitWithDB(
+                    "jdbc:postgresql://localhost:5432/studs",
+                    args.length > 0 ? args[0] : "", args.length > 1 ? args[1] : "", logger);
+        } catch (SQLException e) {
+            logger.error("Error occurred while connecting to database: " + e.getMessage());
+            return;
         }
-        if (selector == null || queueManager == null) return;
+
+        ServerReadableWritable readerWriter;
+        Selector selector = new NetworkConnector(logger).getConnections(8080);
+        if (selector == null) return;
         Runtime.getRuntime().addShutdownHook(new Thread(new ExitHandler(queueManager, logger)));
         try {
             while (!selector.keys().isEmpty()) {
@@ -46,7 +50,7 @@ public class ServerMain {
                 }
             }
         } catch (IOException e) {
-            logger.error("Error that stopped the server: " + e.getMessage() + ". Stack trace" );
+            logger.error("Error that stopped the server: " + e.getMessage() );
         }
     }
 }

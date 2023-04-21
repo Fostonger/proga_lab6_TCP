@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class SessionWorker {
     public static Session getSession(
             CommandReadable consoleReader, OutputWritable consoleWriter, ClientNetWorkable netWorker
-    ) throws IOException, ClassNotFoundException {
+    ) {
         SessionType type;
         do {
             consoleWriter.writeMessage("Login or register ('l' or 'r' respectively): ");
@@ -24,7 +24,7 @@ public class SessionWorker {
         consoleWriter.writeMessage("Enter name:\t\t\t\t\t\t\t\t");
         String name = getUsername(consoleReader);
         consoleWriter.writeMessage("Enter password (press enter if none):\t");
-        String password;
+        byte[] password;
         try {
             password = getPassword(consoleReader);
         } catch (NoSuchAlgorithmException e) {
@@ -34,7 +34,13 @@ public class SessionWorker {
         Session session = new Session(name, password, type);
         CommandShell commandShell = new CommandShell("auth", "");
         ClientRequest request = new ClientRequest(session, commandShell);
-        String response = netWorker.sendRequestAndGetResponse(request);
+        String response = null;
+        try {
+            response = netWorker.sendRequestAndGetResponse(request);
+        } catch (IOException | ClassNotFoundException e) {
+            consoleWriter.writeMessage("Error occurred while sending request for authorization!");
+            return null;
+        }
         consoleWriter.writeMessage(response + "\n");
         return response.equals("auth successful, welcome!")
                 ? session
@@ -51,9 +57,9 @@ public class SessionWorker {
     private static String getUsername(CommandReadable consoleReader) {
         return consoleReader.getString();
     }
-    private static String getPassword(CommandReadable consoleReader) throws NoSuchAlgorithmException {
+    private static byte[] getPassword(CommandReadable consoleReader) throws NoSuchAlgorithmException {
         String password = consoleReader.getString();
         MessageDigest digest = MessageDigest.getInstance("SHA-384");
-        return new String(digest.digest(password.getBytes()));
+        return digest.digest(password.getBytes());
     }
 }

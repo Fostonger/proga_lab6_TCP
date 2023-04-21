@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import utils.RouteFilter;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -16,16 +18,14 @@ public class CollectionContainer {
     /**
      * Container class that stores routes and metadata about the json file
      * @param routes routes to store and restore
-     * @param creationDate metadata about creation date of the json file
      */
     @JsonCreator
     public CollectionContainer(
-            @JsonProperty("routes") Route[] routes,
-            @JsonProperty("creationDate") LocalDate creationDate
+            @JsonProperty("routes") List<Route> routes
     ) {
-        this.queue = new PriorityQueue<Route>(RouteFilter.DISTANCE_LESS);
-        this.queue.addAll(List.of(routes));
-        this.creationDate = creationDate;
+        this.queue = (PriorityQueue<Route>) Collections.synchronizedCollection(new PriorityQueue<>(RouteFilter.BY_NAME));
+        this.queue.addAll(routes);
+        this.creationDate = LocalDate.now();
     }
 
     /**

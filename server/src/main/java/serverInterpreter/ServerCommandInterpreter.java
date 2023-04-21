@@ -2,16 +2,16 @@ package serverInterpreter;
 
 import commands.*;
 import queueManager.PriorityQueueManageable;
+import queueManager.PriorityQueueManager;
+import serverCommands.Auth;
 import serverCommands.ServerExecuteScript;
 import serverCommands.ServerExit;
 import transportShells.ClientRequest;
-import transportShells.CommandShell;
-import utils.RouteCreatable;
-import utils.RouteFactory;
 import utils.ServerRouteFactory;
 import utils.serverReaderWriter.ServerCommandReadable;
+import utils.sessionManager.SessionManageable;
+import utils.sessionManager.SessionManager;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +21,16 @@ import java.util.Map;
 public class ServerCommandInterpreter {
     private final Map<String, AbstractCommand> commands;
     private final ServerCommandReadable clientInput;
-    private ServerRouteFactory routeCreator = new ServerRouteFactory();
+    private final SessionManageable sessionManager = new SessionManager();
+    private final ServerRouteFactory routeCreator = new ServerRouteFactory();
 
     /**
      * @param queueManager manager to be used in commands
      */
-    public ServerCommandInterpreter(PriorityQueueManageable queueManager,
+    public ServerCommandInterpreter(PriorityQueueManager queueManager,
                                     ServerCommandReadable clientInput) {
         this.clientInput = clientInput;
+        queueManager.setSessionManager(sessionManager);
 
         commands = new HashMap<>();
 
@@ -37,9 +39,6 @@ public class ServerCommandInterpreter {
 
         RemoveById removeById = new RemoveById(queueManager);
         commands.put(removeById.getName(), removeById);
-
-        Help help = new Help(commands.values());
-        commands.put(help.getName(), help);
 
         GreaterThanDistance greaterThanDistance = new GreaterThanDistance(queueManager);
         commands.put(greaterThanDistance.getName(), greaterThanDistance);
@@ -76,6 +75,12 @@ public class ServerCommandInterpreter {
 
         ServerExecuteScript exec = new ServerExecuteScript();
         commands.put(exec.getName(), exec);
+
+        Auth auth = new Auth(sessionManager, queueManager);
+        commands.put(auth.getName(), auth);
+
+        Help help = new Help(commands.values());
+        commands.put(help.getName(), help);
     }
 
     /**
@@ -87,6 +92,9 @@ public class ServerCommandInterpreter {
             return "Client returned object, that cannot be casted to command\n";
         AbstractCommand command = commands.get(request.getCommandShell().getCommandName());
         routeCreator.setContainer(request.getCommandShell().getContainer());
+        routeCreator.setSession(request.getSession());
+        sessionManager.setSession(request.getSession());
+
         return command.execute(request.getCommandShell().getArgument());
     }
 }

@@ -1,5 +1,7 @@
 package utils;
 
+import session.Session;
+import session.SessionType;
 import transportShells.ServerResponse;
 
 import java.io.*;
@@ -13,7 +15,7 @@ public class ClientNetWorker implements ClientNetWorkable {
         this.inputStream = clientSocket.getInputStream();
     }
     @Override
-    public void sendObject(Object o) {
+    public <T extends Serializable> void sendObject(T o) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objOut = new ObjectOutputStream(byteArrayOutputStream);
@@ -37,7 +39,7 @@ public class ClientNetWorker implements ClientNetWorkable {
     }
 
     @Override
-    public String sendRequestAndGetResponse(Object o) throws IOException, ClassNotFoundException {
+    public <T extends Serializable> String sendRequestAndGetResponse(T o) throws IOException, ClassNotFoundException {
         sendObject(o);
         return getResponse();
     }
