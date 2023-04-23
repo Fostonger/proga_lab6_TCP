@@ -10,5 +10,5 @@ public interface RouteCreatable {
      * @param ids map of ids to get new unique id
      * @return new route
      */
-    public Route createRoute(Map<Integer, Route> ids);
+    public Route createRoute(int id);
 }

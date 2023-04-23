@@ -3,6 +3,8 @@ package commands;
 import data.Route;
 import queueManager.PriorityQueueManageable;
 
+import java.sql.SQLException;
+
 /**
  * command that returns string containing the first element's description
  */
@@ -18,8 +20,12 @@ public class Head extends AbstractCommand {
 
     @Override
     public String execute(String arg) {
-        Route head = queueManager.getHead();
-        if (head != null) return head.toString();
-        return "collection is empty\n";
+        try {
+            Route head = queueManager.getHead();
+            if (head != null) return head.toString();
+            return "collection is empty\n";
+        } catch (SQLException e) {
+            return "error occurred while trying to get head of the collection: " + e.getMessage() +" \n";
+        }
     }
 }

@@ -1,8 +1,5 @@
 package transportShells;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import data.Route;
 import utils.RouteCreationContainer;
 
 import java.io.Serializable;

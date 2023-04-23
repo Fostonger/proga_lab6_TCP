@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="lab6" />
+        <module name="server" />
+        <module name="client" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="lab6" target="16" />
+      <module name="proga_lab6" target="19" />
+      <module name="serverlab7" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>
