@@ -6,7 +6,7 @@
 
     <groupId>com.fost</groupId>
     <artifactId>client</artifactId>
-    <version>0.9</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>com.fost</groupId>
             <artifactId>lab6</artifactId>
-            <version>0.9</version>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
