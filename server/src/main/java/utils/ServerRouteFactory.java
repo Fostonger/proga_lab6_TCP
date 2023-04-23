@@ -1,23 +1,19 @@
 package utils;
 
 import data.Route;
-import database.IdGenerator;
-import org.apache.logging.log4j.Logger;
-import session.Session;
+import utils.sessionManager.SessionManageable;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Map;
 
 public class ServerRouteFactory implements RouteCreatable {
     private RouteCreationContainer container;
-    private Session session;
+    private SessionManageable session;
     public ServerRouteFactory() {}
 
     public void setContainer(RouteCreationContainer container) {
         this.container = container;
     }
-    public void setSession(Session session) {
+    public void setSession(SessionManageable session) {
         this.session = session;
     }
     @Override

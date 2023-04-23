@@ -15,6 +15,7 @@ public class ServerReaderWriter implements ServerReadableWritable {
     private final SelectionKey clientKey;
     private final ByteBuffer buffer;
     private final Logger logger;
+
     public ServerReaderWriter(SelectionKey clientKey, Logger logger) {
         this.clientKey = clientKey;
         this.logger = logger;
@@ -26,16 +27,10 @@ public class ServerReaderWriter implements ServerReadableWritable {
             buffer.clear();
             clientChannel.read(buffer);
             buffer.flip();
-            logger.info("Have got command from client " + clientChannel.getRemoteAddress() + " (remote)");
 
             ByteArrayInputStream baos = new ByteArrayInputStream(buffer.array());
             ObjectInputStream ois = new ObjectInputStream(baos);
-            Object receivedObj = ois.readObject();
-            if (((ClientRequest) receivedObj) != null)
-                logger.info("Command: " + ((ClientRequest) receivedObj).getCommandShell().getCommandName());
-            else
-                logger.info("Couldn't parse command from received object");
-            return receivedObj;
+            return ois.readObject();
         }  catch (IOException | ClassNotFoundException e) {
             return null;
         }

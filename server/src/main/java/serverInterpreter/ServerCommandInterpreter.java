@@ -1,36 +1,35 @@
 package serverInterpreter;
 
 import commands.*;
-import queueManager.PriorityQueueManageable;
-import queueManager.PriorityQueueManager;
+import serverCommands.PriorityQueueManager;
 import serverCommands.Auth;
 import serverCommands.ServerExecuteScript;
 import serverCommands.ServerExit;
 import transportShells.ClientRequest;
 import utils.ServerRouteFactory;
-import utils.serverReaderWriter.ServerCommandReadable;
 import utils.sessionManager.SessionManageable;
 import utils.sessionManager.SessionManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * interpreter and executor of the commands
  */
 public class ServerCommandInterpreter {
     private final Map<String, AbstractCommand> commands;
-    private final ServerCommandReadable clientInput;
     private final SessionManageable sessionManager = new SessionManager();
     private final ServerRouteFactory routeCreator = new ServerRouteFactory();
-
+    private final ThreadPoolExecutor containerExec =
+            (ThreadPoolExecutor) Executors.newCachedThreadPool();
     /**
      * @param queueManager manager to be used in commands
      */
-    public ServerCommandInterpreter(PriorityQueueManager queueManager,
-                                    ServerCommandReadable clientInput) {
-        this.clientInput = clientInput;
+    public ServerCommandInterpreter(PriorityQueueManager queueManager) {
         queueManager.setSessionManager(sessionManager);
+        routeCreator.setSession(sessionManager);
 
         commands = new HashMap<>();
 
@@ -86,13 +85,11 @@ public class ServerCommandInterpreter {
     /**
      * fetches command from input channel and executes the command
      */
-    public String fetchCommand() {
-        ClientRequest request = (ClientRequest) clientInput.getObject();
+    public String fetchCommand(ClientRequest request) {
         if (request == null)
             return "Client returned object, that cannot be casted to command\n";
         AbstractCommand command = commands.get(request.getCommandShell().getCommandName());
         routeCreator.setContainer(request.getCommandShell().getContainer());
-        routeCreator.setSession(request.getSession());
         sessionManager.setSession(request.getSession());
 
         return command.execute(request.getCommandShell().getArgument());

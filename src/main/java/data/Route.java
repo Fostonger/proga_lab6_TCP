@@ -1,11 +1,8 @@
 package data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDate;
 
-public class Route {
+public class Route implements Comparable<Route> {
     private final Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private final String name; //Поле не может быть null, Строка не может быть пустой
     private final Coordinates coordinates; //Поле не может быть null
@@ -25,15 +22,8 @@ public class Route {
      * @param from location "from" of the route, can be null
      * @param name name of the route, nonnull parameter
      */
-    @JsonCreator
-    public Route(
-            @JsonProperty("id") Integer id,
-            @JsonProperty("coordinates") Coordinates coordinates,
-            @JsonProperty("creationDate") LocalDate creationDate,
-            @JsonProperty("distance") double distance,
-            @JsonProperty("to") Location to,
-            @JsonProperty("from") Location from,
-            @JsonProperty("name") String name,
+    public Route(Integer id, Coordinates coordinates, LocalDate creationDate, double distance,
+            Location to, Location from, String name,
             String author) {
         this.id = id;
         this.coordinates = coordinates;
@@ -81,5 +71,10 @@ public class Route {
                 "to:\n" + to.toString() + "\n" +
                 "distance:\t\t\t" + distance + "\n" +
                 "author:\t\t\t\t" + author + "\n";
+    }
+
+    @Override
+    public int compareTo(Route o) {
+        return Integer.compare(this.id, o.id);
     }
 }

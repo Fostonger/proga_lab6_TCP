@@ -38,21 +38,21 @@ public interface PriorityQueueManageable {
      * @param distance distance to compare with
      * @return amount of elements whose distance is less than given distance
      */
-    public long countLessThanDistance(double distance);
+    public long countLessThanDistance(double distance) throws SQLException;
 
     /**
      * @see commands.GreaterThanDistance#execute(String)
      * @param distance distance to compare with
      * @return amount of elements whose distance is greater than given distance
      */
-    public long countGreaterThanDistance(double distance);
+    public long countGreaterThanDistance(double distance) throws SQLException;
 
     /**
      * @see commands.FilterLessThanDistance#execute(String)
      * @param distance distance to compare with
      * @return list of elements whose distance is less than the given one
      */
-    public List<Route> filterLessThanDistance(double distance);
+    public List<Route> filterLessThanDistance(double distance) throws SQLException;
 
     /**
      * updates element in the collection by the given id
@@ -81,7 +81,7 @@ public interface PriorityQueueManageable {
      * @see commands.Head#execute(String)
      * @return Route from head of the collection; does not remove it
      */
-    public Route getHead();
+    public Route getHead() throws SQLException;
 
     /**
      * clears current collection
@@ -93,7 +93,7 @@ public interface PriorityQueueManageable {
      * helper function
      * @return queue stored in collection
      */
-    public List<Route> getQueue();
+    public List<Route> getQueue() throws SQLException;
 
     /**
      * helper function

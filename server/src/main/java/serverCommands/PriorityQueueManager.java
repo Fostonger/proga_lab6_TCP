@@ -1,4 +1,4 @@
-package queueManager;
+package serverCommands;
 
 import data.CollectionContainer;
 import data.Route;
@@ -7,10 +7,10 @@ import database.JDBCWorker;
 import database.LoginAnswer;
 import database.PriorityQueueJDBCConnector;
 import org.apache.logging.log4j.Logger;
+import queueManager.PriorityQueueManageable;
 import session.Session;
 import utils.RouteFilter;
 import utils.sessionManager.SessionManageable;
-import utils.sessionManager.SessionManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -33,10 +33,13 @@ public class PriorityQueueManager implements PriorityQueueManageable, Authorizer
         this.logger = logger;
         try {
             container = new CollectionContainer(dbConnector.getPriorityQueue());
+            ids = container.updateQueue(queue -> {
+                return Collections.synchronizedMap(queue.stream().collect(Collectors.toMap(Route::getId, route -> route)));
+            });
         } catch (SQLException e) {
-            container = new CollectionContainer(new ArrayList<Route>());
+            container = new CollectionContainer(Collections.synchronizedList(new ArrayList<Route>()));
+            ids = Collections.synchronizedMap(new HashMap<>());
         }
-        ids = container.getQueue().stream().collect(Collectors.toMap(Route::getId, route -> route));
     }
     public static PriorityQueueManager InitWithDB(String url, String username, String password, Logger logger) throws SQLException {
         JDBCWorker jdbcWorker = new JDBCWorker(url, username, password);
@@ -48,83 +51,99 @@ public class PriorityQueueManager implements PriorityQueueManageable, Authorizer
         if (route.getId() < 1)
             throw new SQLException("Couldn't generate id for that route!");
         dbConnector.addRoute(route);
-        container.getQueue().add(route);
+        container.updateQueue( queue -> {
+            queue.add(route);
+        });
         ids.put(route.getId(), route);
     }
     public boolean addRouteIfMin(Route route) throws SQLException {
-        if (container.getQueue().isEmpty()) {
-            add(route);
-            return true;
-        }
-        if (container.getQueue().stream().min(RouteFilter.DISTANCE_LESS).get().getDistance() > route.getDistance()) {
-            add(route);
-            return true;
-        }
-        return false;
+        return container.updateQueue(queue -> {
+            if (queue.isEmpty()) {
+                this.add(route);
+                return true;
+            }
+            if (queue.stream().min(RouteFilter.DISTANCE_LESS).get().getDistance() > route.getDistance()) {
+                add(route);
+                return true;
+            }
+            return false;
+        });
     }
     public boolean addRouteIfMax(Route route) throws SQLException  {
-        if (container.getQueue().isEmpty()) {
-            add(route);
-            return true;
-        }
-        if (container.getQueue().stream().max(RouteFilter.DISTANCE_GREATER).get().getDistance() < route.getDistance()) {
-            add(route);
-            return true;
-        }
-        return false;
+        return container.updateQueue(queue -> {
+            if (queue.isEmpty()) {
+                add(route);
+                return true;
+            }
+            if (queue.stream().max(RouteFilter.DISTANCE_GREATER).get().getDistance() < route.getDistance()) {
+                add(route);
+                return true;
+            }
+            return false;
+        });
     }
-    public long countLessThanDistance(double distance) {
-        return container.getQueue().stream()
-                .filter(route -> route.getDistance() < distance)
-                .count();
+    public long countLessThanDistance(double distance) throws SQLException {
+        return container.updateQueue(queue -> {
+            return queue.stream()
+                    .filter(route -> route.getDistance() < distance)
+                    .count();
+        });
     }
-    public long countGreaterThanDistance(double distance) {
-        return container.getQueue().stream()
-                .filter(route -> route.getDistance() > distance)
-                .count();
+    public long countGreaterThanDistance(double distance) throws SQLException {
+        return container.updateQueue(queue -> {
+            return queue.stream()
+                    .filter(route -> route.getDistance() > distance)
+                    .count();
+        });
     }
-    public List<Route> filterLessThanDistance(double distance) {
-        return container.getQueue().stream()
-                .filter(route -> route.getDistance() < distance)
-                .sorted(RouteFilter.BY_NAME)
-                .toList();
+    public List<Route> filterLessThanDistance(double distance) throws SQLException {
+        return container.updateQueue(queue -> {
+            return queue.stream()
+                    .filter(route -> route.getDistance() < distance)
+                    .sorted(RouteFilter.BY_NAME)
+                    .toList();
+        });
     }
     public void updateById(int id, Route newRoute) throws NoSuchElementException, SQLException  {
-        if (!ids.containsKey(id)) throw new NoSuchElementException();
-        if (!isAuthor(id)) throw new SQLException("you are not the owner of the route");
-        dbConnector.updateById(newRoute, id);
-        container.getQueue().remove(ids.replace(id, newRoute));
-        container.getQueue().add(newRoute);
+        container.updateQueue(queue -> {
+            if (!ids.containsKey(id)) throw new NoSuchElementException();
+            if (!isAuthor(id)) throw new SQLException("you are not the owner of the route");
+            dbConnector.updateById(newRoute, id);
+            queue.remove(ids.replace(id, newRoute));
+            queue.add(newRoute);
+        });
     }
     public boolean containsId(int id)  {
         return ids.containsKey(id);
     }
     public void save() throws IOException {}
-    public Route getHead() {
-        return container.getQueue().peek();
+    public Route getHead() throws SQLException {
+        return container.updateQueue(queue -> { return queue.peek(); } );
     }
     public void clear() throws SQLException  {
-        dbConnector.clearAllByUser(session.getName());
-        ids = ids.values().stream()
-                .filter(value -> !value.getAuthor().equals(session.getName()))
-                .collect(Collectors.toMap(Route::getId, value -> value));
-        container = new CollectionContainer(
-                container.getQueue().stream()
-                        .filter(value -> ids.containsKey(value.getId()))
-                        .collect(Collectors.toList())
-        );
+        container.updateQueue(queue -> {
+            dbConnector.clearAllByUser(session.getName());
+            ids = ids.values().stream()
+                    .filter(value -> !value.getAuthor().equals(session.getName()))
+                    .collect(Collectors.toMap(Route::getId, value -> value));
+            queue.removeIf(route -> !ids.containsKey(route.getId()));
+        });
     }
-    public List<Route> getQueue() {
-        return container.getQueue().stream().toList();
+    public List<Route> getQueue() throws SQLException {
+        return container.updateQueue(queue -> {
+            return queue.stream().toList();
+        });
     }
     public CollectionContainer getContainer() {
         return container;
     }
     public void removeById(int id) throws NoSuchElementException, SQLException {
-        if (!ids.containsKey(id)) throw new NoSuchElementException();
-        if (!isAuthor(id)) throw new SQLException("you are not author of the route!");
-        dbConnector.removeById(id);
-        container.getQueue().remove(ids.remove(id));
+        container.updateQueue(queue -> {
+            if (!ids.containsKey(id)) throw new NoSuchElementException();
+            if (!isAuthor(id)) throw new SQLException("you are not author of the route!");
+            dbConnector.removeById(id);
+            queue.remove(ids.remove(id));
+        });
     }
     public int generateId() {
         try {
