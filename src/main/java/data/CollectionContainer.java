@@ -1,34 +1,37 @@
 package data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import utils.RouteFilter;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class CollectionContainer {
-    public interface CollectionFunction<R,T> {
-        T update(R queue) throws SQLException;
-    }
-    public interface CollectionConsumer<R> {
-        void apply(R queue) throws SQLException;
-    }
-    private final Collection<Route> queue;
-    private final LocalDate creationDate;
+    private PriorityQueue<Route> queue;
+    private LocalDate creationDate;
 
     /**
      * Container class that stores routes and metadata about the json file
      * @param routes routes to store and restore
+     * @param creationDate metadata about creation date of the json file
      */
-    public CollectionContainer(List<Route> routes) {
-        this.queue = Collections.synchronizedCollection(new PriorityQueue<>(RouteFilter.BY_NAME));
-        this.queue.addAll(routes);
-        this.creationDate = LocalDate.now();
+    @JsonCreator
+    public CollectionContainer(
+            @JsonProperty("routes") Route[] routes,
+            @JsonProperty("creationDate") LocalDate creationDate
+    ) {
+        this.queue = new PriorityQueue<Route>(RouteFilter.DISTANCE_LESS);
+        this.queue.addAll(List.of(routes));
+        this.creationDate = creationDate;
     }
 
     /**
      * @return length of the stored collection
      */
+    @JsonIgnore
     public long getCollectionLength() {
         return queue.size();
     }
@@ -36,6 +39,7 @@ public class CollectionContainer {
     /**
      * @return metadata about creation date of the json file
      */
+    @JsonProperty("creationDate")
     public LocalDate getCreationDate() {
         return creationDate;
     }
@@ -43,6 +47,7 @@ public class CollectionContainer {
     /**
      * @return metadata about collection type stored in container
      */
+    @JsonIgnore
     public String getQueueType() {
         return queue.getClass().getSimpleName();
     }
@@ -50,36 +55,8 @@ public class CollectionContainer {
     /**
      * @return queue stored in container
      */
-    public void updateQueue(CollectionConsumer<PriorityQueue<Route>> function) throws SQLException {
-        PriorityQueue<Route> priorityQueue = new PriorityQueue<>(queue);
-        function.apply(priorityQueue);
-        commitChangesInQueue(priorityQueue);
+    @JsonProperty("routes")
+    public PriorityQueue<Route> getQueue() {
+        return queue;
     }
-    public <T> T updateQueue(CollectionFunction<PriorityQueue<Route>, ? extends T> function) throws SQLException {
-        PriorityQueue<Route> priorityQueue = new PriorityQueue<>(queue);
-        T result = function.update(priorityQueue);
-        commitChangesInQueue(priorityQueue);
-        return result;
-    }
-    private void commitChangesInQueue(Collection<Route> newCollection) {
-        // delete all elements, that were deleted
-        queue.removeIf(route -> !newCollection.contains(route));
-        // idk why is this working
-//        while (iterator.hasNext()) {
-//            Route route = iterator.next();
-//            if (!newCollection.contains(route)) {
-//                iterator.remove();
-//            }
-//        }
-
-        // and this is not (????!!!!!)
-//        queue.stream()
-//                .filter(route -> !newCollection.contains(route))
-//                .forEach(queue::remove);
-        // and add all elements, that were added
-        newCollection.stream()
-                .filter(route -> !queue.contains(route))
-                .forEach(queue::add);
-    }
-
 }

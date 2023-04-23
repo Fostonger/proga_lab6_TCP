@@ -1,20 +1,22 @@
 package commands;
 
 import queueManager.PriorityQueueManageable;
-import consoleReader.CommandReadable;
+import consoleReader.CommandReaderable;
 import consoleReader.OutputWritable;
 import transportShells.CommandShell;
 import utils.RouteCreatable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * interpreter and executor of the commands
  */
 public class CommandInterpreter {
     private final Map<String, AbstractCommand> commands;
-    private final CommandReadable commandReader;
+    private final CommandReaderable commandReader;
     private final OutputWritable outputWriter;
 
     /**
@@ -24,7 +26,7 @@ public class CommandInterpreter {
      * @param outputWriter stream to write commands result
      */
     public CommandInterpreter(PriorityQueueManageable queueManager, RouteCreatable routeFactory,
-                              CommandReadable commandReader, OutputWritable outputWriter) {
+                              CommandReaderable commandReader, OutputWritable outputWriter) {
         this.commandReader = commandReader;
         this.outputWriter = outputWriter;
         commands = new HashMap<>();

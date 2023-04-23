@@ -4,7 +4,6 @@ import data.Route;
 import queueManager.PriorityQueueManageable;
 import utils.RouteCreatable;
 
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 /**
@@ -31,15 +30,13 @@ public class Update extends AbstractCommand {
 
             if (!queueManager.containsId(id)) throw new NoSuchElementException();
 
-            Route newRoute = routeFactory.createRoute(0);
+            Route newRoute = routeFactory.createRoute(queueManager.getIds());
             queueManager.updateById(id, newRoute);
             return "element with id " + arg + " was updated successfully!\n";
         } catch (NoSuchElementException e) {
             return "there is no element with id " + arg + " in collection\n";
         } catch (NumberFormatException e) {
             return arg + " is not valid id, it needs to be integer\n";
-        } catch (SQLException e) {
-            return "couldn't update the route by the id: " + e.getMessage() + "\n";
         }
     }
 }

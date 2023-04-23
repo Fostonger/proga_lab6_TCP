@@ -4,7 +4,7 @@ import data.Coordinates;
 import data.Location;
 
 public class PropertiesReceiver implements PropertiesReceivable {
-    private final CommandReadable reader;
+    private final CommandReaderable reader;
     private final OutputWritable outputWriter;
 
     /**
@@ -12,7 +12,7 @@ public class PropertiesReceiver implements PropertiesReceivable {
      * @param reader source to read from
      * @param writer output stream to write what to enter
      */
-    public PropertiesReceiver(CommandReadable reader, OutputWritable writer) {
+    public PropertiesReceiver(CommandReaderable reader, OutputWritable writer) {
         this.outputWriter = writer;
         this.reader = reader;
     }
