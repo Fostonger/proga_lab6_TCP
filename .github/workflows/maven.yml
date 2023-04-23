@@ -33,6 +33,13 @@ jobs:
       run: mvn clean install && mvn -B package --file server/pom.xml
     - name: Build client with Maven
       run: mvn -B package --file client/pom.xml
+    - name: Copy client JAR file
+      run: cp client/target/*.jar client.jar
+    - name: Upload client JAR file
+      uses: actions/upload-artifact@v2
+      with:
+        name: client
+        path: ./client.jar
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
