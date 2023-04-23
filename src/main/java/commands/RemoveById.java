@@ -2,6 +2,7 @@ package commands;
 
 import queueManager.PriorityQueueManageable;
 
+import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 /**
@@ -28,6 +29,8 @@ public class RemoveById extends AbstractCommand {
             return "there is no element with id " + arg + " in collection\n";
         } catch (NumberFormatException e) {
             return "\"" + arg + "\" is not valid id, it needs to be integer\n";
+        } catch (SQLException e) {
+            return "couldn't delete route: " + e.getMessage() + "\n";
         }
     }
 }
