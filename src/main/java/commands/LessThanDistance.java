@@ -2,8 +2,6 @@ package commands;
 
 import queueManager.PriorityQueueManageable;
 
-import java.sql.SQLException;
-
 /**
  * command that returns string containing all routes whose distance is less than the given one
  */
@@ -27,8 +25,6 @@ public class LessThanDistance extends AbstractCommand {
             return "there are " + count + " elements with distance less than " + distance + "\n";
         } catch (NumberFormatException e) {
             return arg + " is not valid id, it needs to be double\n";
-        } catch (SQLException e) {
-            return "caught error while trying to get collection: " + e.getMessage() + "\n";
         }
     }
 }

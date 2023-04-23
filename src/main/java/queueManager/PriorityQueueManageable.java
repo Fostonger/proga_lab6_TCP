@@ -4,7 +4,6 @@ import data.CollectionContainer;
 import data.Route;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -15,7 +14,7 @@ public interface PriorityQueueManageable {
      * @see commands.Add#execute(String)
      * @param route route to add
      */
-    public void add(Route route) throws SQLException;
+    public void add(Route route);
 
     /**
      * adds route to file if its distance is less than any other in collection
@@ -23,7 +22,7 @@ public interface PriorityQueueManageable {
      * @param route route to add
      * @return true if the element was less than minimum, and false if it wasn't, so element wasn't added
      */
-    public boolean addRouteIfMin(Route route) throws SQLException ;
+    public boolean addRouteIfMin(Route route);
 
     /**
      * adds route to file if its distance is greater than any other in collection
@@ -31,28 +30,28 @@ public interface PriorityQueueManageable {
      * @param route route to add
      * @return true if the element was greater than maximum, and false if it wasn't, so element wasn't added
      */
-    public boolean addRouteIfMax(Route route) throws SQLException ;
+    public boolean addRouteIfMax(Route route);
 
     /**
      * @see commands.LessThanDistance#execute(String)
      * @param distance distance to compare with
      * @return amount of elements whose distance is less than given distance
      */
-    public long countLessThanDistance(double distance) throws SQLException;
+    public long countLessThanDistance(double distance);
 
     /**
      * @see commands.GreaterThanDistance#execute(String)
      * @param distance distance to compare with
      * @return amount of elements whose distance is greater than given distance
      */
-    public long countGreaterThanDistance(double distance) throws SQLException;
+    public long countGreaterThanDistance(double distance);
 
     /**
      * @see commands.FilterLessThanDistance#execute(String)
      * @param distance distance to compare with
      * @return list of elements whose distance is less than the given one
      */
-    public List<Route> filterLessThanDistance(double distance) throws SQLException;
+    public List<Route> filterLessThanDistance(double distance);
 
     /**
      * updates element in the collection by the given id
@@ -61,7 +60,7 @@ public interface PriorityQueueManageable {
      * @param newRoute new element to replace with
      * @throws NoSuchElementException throws if there is no element with the given id in the collection
      */
-    public void updateById(int id, Route newRoute) throws NoSuchElementException, SQLException;
+    public void updateById(int id, Route newRoute) throws NoSuchElementException;
 
     /**
      * helper function for checking if container has element with given id
@@ -81,19 +80,19 @@ public interface PriorityQueueManageable {
      * @see commands.Head#execute(String)
      * @return Route from head of the collection; does not remove it
      */
-    public Route getHead() throws SQLException;
+    public Route getHead();
 
     /**
      * clears current collection
      * @see commands.Clear#execute(String)
      */
-    public void clear() throws SQLException ;
+    public void clear();
 
     /**
      * helper function
      * @return queue stored in collection
      */
-    public List<Route> getQueue() throws SQLException;
+    public List<Route> getQueue();
 
     /**
      * helper function
@@ -107,11 +106,11 @@ public interface PriorityQueueManageable {
      * @param id id of element to be removed
      * @throws NoSuchElementException throws if there is no element with given id in collection
      */
-    public void removeById(int id) throws NoSuchElementException, SQLException;
+    public void removeById(int id) throws NoSuchElementException;
 
     /**
      * helper function
      * @return map with current ids
      */
-    public int generateId();
+    public Map<Integer, Route> getIds();
 }

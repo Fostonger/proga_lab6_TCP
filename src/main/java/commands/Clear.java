@@ -2,8 +2,6 @@ package commands;
 
 import queueManager.PriorityQueueManageable;
 
-import java.sql.SQLException;
-
 /**
  * command that clears the collection
  */
@@ -20,11 +18,7 @@ public class Clear extends AbstractCommand {
     @Override
     public String execute(String arg) {
         if (arg.equals("")) {
-            try {
-                queueManager.clear();
-            } catch (SQLException e) {
-                return "Couldn't clear your collection: " + e.getMessage() + "\n";
-            }
+            queueManager.clear();
             return "successfully cleared collection!\n";
         } else {
             return "this command doesn't need any arguments, see 'help'\n";

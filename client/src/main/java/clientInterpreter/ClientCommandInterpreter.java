@@ -2,7 +2,7 @@ package clientInterpreter;
 
 import clientCommands.ClientExecuteScript;
 import commands.*;
-import consoleReader.CommandReadable;
+import consoleReader.CommandReaderable;
 import consoleReader.OutputWritable;
 import transportShells.CommandShell;
 import utils.*;
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ClientCommandInterpreter {
     private final Map<String, AbstractCommand> commands;
-    private final CommandReadable commandReader;
+    private final CommandReaderable commandReader;
     private final OutputWritable outputWriter;
     private final ClientRouteCreatable routeCreator;
 
@@ -24,7 +24,7 @@ public class ClientCommandInterpreter {
      * @param commandReader reader of the commands
      * @param outputWriter stream to write commands result
      */
-    public ClientCommandInterpreter(CommandReadable commandReader, OutputWritable outputWriter,
+    public ClientCommandInterpreter(CommandReaderable commandReader, OutputWritable outputWriter,
                                     ClientRouteCreatable routeCreator,
                                     InterpreterSwitchable interpreterSwitch) {
         this.commandReader = commandReader;

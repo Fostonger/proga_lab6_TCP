@@ -18,7 +18,7 @@ public class ClientRouteFactory implements ClientRouteCreatable, RouteCreatable 
     public ClientRouteFactory(PropertiesReceivable propertiesReceiver) {
         this.propertiesReceiver = propertiesReceiver;
     }
-    public Route createRoute(int id) {
+    public Route createRoute(Map<Integer, Route> ids) {
         Coordinates coordinates = propertiesReceiver.getCoordinatesFromInput("coordinates:\n");
         Location to = propertiesReceiver.getLocationFromInput("location \"to\":\n", false);
         Location from = propertiesReceiver.getLocationFromInput("location \"from\":\n", true);

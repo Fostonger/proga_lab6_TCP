@@ -1,12 +1,9 @@
 package utils;
 
-import auth.SessionWorker;
 import clientInterpreter.ClientCommandInterpreter;
 import consoleReader.CommandReader;
 import consoleReader.OutputWritable;
 import consoleReader.PropertiesReceiver;
-import session.Session;
-import transportShells.ClientRequest;
 import transportShells.CommandShell;
 
 import java.io.EOFException;
@@ -19,12 +16,10 @@ public class ClientWorker implements InterpreterSwitchable {
     private ClientCommandInterpreter interpreter;
     private final OutputWritable output;
     private final ClientNetWorker netWorker;
-    private final Session session;
-    private ClientWorker(OutputWritable output, ClientNetWorker netWorker, Session session) {
+    private ClientWorker(OutputWritable output, ClientNetWorker netWorker) {
         this.interpreter = null;
         this.output = output;
         this.netWorker = netWorker;
-        this.session = session;
     }
 
     public static ClientWorker create(Socket clientSocket, InputStream input, OutputStream output) {
@@ -35,12 +30,10 @@ public class ClientWorker implements InterpreterSwitchable {
              netWorker = new ClientNetWorker(clientSocket);
         } catch (IOException e) {
             readerWriter.writeMessage("Couldn't get input and output streams from socket, sorry!");
-            return null;
+            System.exit(0);
         }
         ClientRouteCreatable routeCreator = new ClientRouteFactory(propertiesReceiver);
-        Session clientSession = SessionWorker.getSession(readerWriter, readerWriter, netWorker);
-        if (clientSession == null) return null;
-        ClientWorker worker = new ClientWorker(readerWriter, netWorker, clientSession);
+        ClientWorker worker = new ClientWorker(readerWriter, netWorker);
         ClientCommandInterpreter interpreter = new ClientCommandInterpreter(
                 readerWriter, readerWriter, routeCreator, worker);
         worker.switchInterpreter(interpreter);
@@ -58,8 +51,7 @@ public class ClientWorker implements InterpreterSwitchable {
             }
             try {
                 if (commandShell != null) {
-                    ClientRequest request = new ClientRequest(session, commandShell);
-                    String answer = netWorker.sendRequestAndGetResponse(request);
+                    String answer = netWorker.sendRequestAndGetResponse(commandShell);
                     output.writeMessage(answer);
                     if (answer.equals("closing connection\n")) return;
                 }

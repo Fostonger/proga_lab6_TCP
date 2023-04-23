@@ -1,7 +1,6 @@
 package utils.serverReaderWriter;
 import org.apache.logging.log4j.Logger;
 
-import transportShells.ClientRequest;
 import transportShells.CommandShell;
 import transportShells.ServerResponse;
 
@@ -15,7 +14,6 @@ public class ServerReaderWriter implements ServerReadableWritable {
     private final SelectionKey clientKey;
     private final ByteBuffer buffer;
     private final Logger logger;
-
     public ServerReaderWriter(SelectionKey clientKey, Logger logger) {
         this.clientKey = clientKey;
         this.logger = logger;
@@ -27,10 +25,16 @@ public class ServerReaderWriter implements ServerReadableWritable {
             buffer.clear();
             clientChannel.read(buffer);
             buffer.flip();
+            logger.info("Have got command from client " + clientChannel.getRemoteAddress() + " (remote)");
 
             ByteArrayInputStream baos = new ByteArrayInputStream(buffer.array());
             ObjectInputStream ois = new ObjectInputStream(baos);
-            return ois.readObject();
+            Object receivedObj = ois.readObject();
+            if (((CommandShell) receivedObj) != null)
+                logger.info("Command: " + ((CommandShell) receivedObj).getCommandName());
+            else
+                logger.info("Couldn't parse command from received object");
+            return receivedObj;
         }  catch (IOException | ClassNotFoundException e) {
             return null;
         }

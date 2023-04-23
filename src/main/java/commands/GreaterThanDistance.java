@@ -2,8 +2,6 @@ package commands;
 
 import queueManager.PriorityQueueManageable;
 
-import java.sql.SQLException;
-
 /**
  * command that returns string containing count of elements whose distance is greater than the given one
  */
@@ -27,8 +25,6 @@ public class GreaterThanDistance extends AbstractCommand {
             return "there are " + count + " elements with distance greater than " + distance + "\n";
         } catch (NumberFormatException e) {
             return arg + " is not valid id, it needs to be double\n";
-        } catch (SQLException e) {
-            return "error occurred while adding: " + e.getMessage() + "\n";
         }
     }
 }

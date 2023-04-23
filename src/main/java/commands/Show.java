@@ -3,7 +3,6 @@ package commands;
 import data.Route;
 import queueManager.PriorityQueueManageable;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -23,21 +22,17 @@ public class Show extends AbstractCommand {
 
     @Override
     public String execute(String arg) {
-        try {
-            List<Route> queue = queueManager.getQueue();
-            if (queue == null) return "program was given incorrect queueManager!\n";
-            if (arg.equals("")) {
-                StringBuilder showString = new StringBuilder();
-                for (int i = 0; i < queue.size(); i++) {
-                    showString.append("--------- Element ").append(i + 1).append(" ---------\n");
-                    showString.append(queue.get(i).toString());
-                }
-                return (queue.size() > 0) ? showString.toString() : "collection is empty!\n";
-            } else {
-                return "command was ran with incorrect argument, see 'help' for information\n";
+        List<Route> queue = queueManager.getQueue();
+        if (queue == null) return "program was given incorrect queueManager!\n";
+        if (arg.equals("")) {
+            StringBuilder showString = new StringBuilder();
+            for (int i = 0; i < queue.size(); i++) {
+                showString.append("--------- Element ").append(i + 1).append(" ---------\n");
+                showString.append(queue.get(i).toString());
             }
-        } catch (SQLException e) {
-            return "error occurred while trying to get collection: " + e.getMessage() + "\n";
+            return (queue.size() > 0) ? showString.toString() : "collection is empty!\n";
+        } else {
+            return "command was ran with incorrect argument, see 'help' for information\n";
         }
     }
 }

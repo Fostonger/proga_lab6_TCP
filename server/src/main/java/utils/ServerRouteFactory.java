@@ -1,26 +1,26 @@
 package utils;
 
+import consoleReader.CommandReaderable;
 import data.Route;
-import utils.sessionManager.SessionManageable;
+import utils.serverReaderWriter.ServerCommandReadable;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 public class ServerRouteFactory implements RouteCreatable {
     private RouteCreationContainer container;
-    private SessionManageable session;
     public ServerRouteFactory() {}
 
     public void setContainer(RouteCreationContainer container) {
         this.container = container;
     }
-    public void setSession(SessionManageable session) {
-        this.session = session;
-    }
     @Override
-    public Route createRoute(int id) {
+    public Route createRoute(Map<Integer, Route> ids) {
+        int id = 1;
+        while(ids.containsKey(id)) id++;
         LocalDate currentDate = LocalDate.now();
         return new Route(id, container.getCoordinates(), currentDate,
-                container.getDistance(), container.getTo(), container.getFrom(), container.getName(), session.getName());
+                container.getDistance(), container.getTo(), container.getFrom(), container.getName());
 
     }
 }

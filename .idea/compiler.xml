@@ -8,11 +8,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="server" />
         <module name="client" />
+        <module name="lab6" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="proga_lab6" target="19" />
-      <module name="serverlab7" target="16" />
-    </bytecodeTargetLevel>
   </component>
 </project>

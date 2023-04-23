@@ -1,6 +1,6 @@
 package commands;
 
-import consoleReader.CommandReadable;
+import consoleReader.CommandReaderable;
 import consoleReader.OutputWritable;
 import consoleReader.PropertiesReceiver;
 import queueManager.PriorityQueueManageable;
@@ -29,7 +29,7 @@ public class ExecuteScript extends AbstractCommand {
     @Override
     public String execute(String arg) {
         try {
-            CommandReadable reader = new CommandReadable() {
+            CommandReaderable reader = new CommandReaderable() {
                 private final Scanner commandScanner = new Scanner(new FileInputStream(arg));
                 public String getString() { return commandScanner.nextLine(); }
                 public int getInt() { return commandScanner.nextInt(); }

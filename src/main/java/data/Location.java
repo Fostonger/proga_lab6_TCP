@@ -1,5 +1,8 @@
 package data;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class Location implements Serializable {
@@ -15,8 +18,10 @@ public class Location implements Serializable {
      * @param z nonnull double z of the location
      * @param name nullable name of the location
      */
+    @JsonCreator
     public Location(
-            Long x, Integer y, double z, String name) {
+            @JsonProperty("x") Long x, @JsonProperty("y") Integer y,
+            @JsonProperty("z") double z, @JsonProperty("name") String name) {
         this.x = x;
         this.name = name;
         this.z = z;

@@ -7,5 +7,5 @@ import java.net.ServerSocket;
 import java.nio.channels.Selector;
 
 public interface NetworkConnectable {
-    public void getConnections(int port);
+    public Selector getConnections(int port);
 }

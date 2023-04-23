@@ -3,7 +3,6 @@ package commands;
 import data.Route;
 import queueManager.PriorityQueueManageable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -39,8 +38,6 @@ public class FilterLessThanDistance extends AbstractCommand {
                     : filterString.toString();
         } catch (NumberFormatException e) {
             return arg + " is not valid id, it needs to be double\n";
-        } catch (SQLException e) {
-            return "an error occurred while filtering collection: " + e.getMessage() + "\n";
         }
     }
 }

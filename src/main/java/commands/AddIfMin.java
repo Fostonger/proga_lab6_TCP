@@ -3,9 +3,6 @@ package commands;
 import data.Route;
 import queueManager.PriorityQueueManageable;
 import utils.RouteCreatable;
-
-import java.sql.SQLException;
-
 /**
  * add_if_min command; adds value if its distance is less than the min of the collection
  */
@@ -24,13 +21,9 @@ public class AddIfMin extends AbstractCommand {
     @Override
     public String execute(String arg) {
         if (arg.equals("")) {
-            Route newRoute = routeFactory.createRoute(queueManager.generateId());
-            try {
-                if (queueManager.addRouteIfMin(newRoute)) {
-                    return "successfully added new route!\n";
-                }
-            } catch (SQLException e) {
-                return "couldn't add route: " + e.getMessage() + "\n";
+            Route newRoute = routeFactory.createRoute(queueManager.getIds());
+            if (queueManager.addRouteIfMin(newRoute)) {
+                return "successfully added new route!\n";
             }
             return "the route is not less than the minimum of the collection\n";
         } else {
