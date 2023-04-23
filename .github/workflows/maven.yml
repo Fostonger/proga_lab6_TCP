@@ -34,14 +34,18 @@ jobs:
     - name: Build client with Maven
       run: mvn -B package --file client/pom.xml
     - name: Copy client JAR file
-      run: cp client/target/*.jar client.jar
+      run: |
+        rm -f build/client.jar
+        cp client/target/*.jar client.jar
     - name: Upload client JAR file
       uses: actions/upload-artifact@v2
       with:
         name: client
         path: ./client.jar
     - name: Copy server JAR file
-      run: cp server/target/*.jar server.jar
+      run: |
+        rm -f build/server.jar
+        cp server/target/*.jar server.jar
     - name: Upload server JAR file
       uses: actions/upload-artifact@v2
       with:
