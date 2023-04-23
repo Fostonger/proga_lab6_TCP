@@ -35,22 +35,22 @@ jobs:
       run: mvn -B package --file client/pom.xml
     - name: Copy client JAR file
       run: |
-        rm -f build/client.jar
-        cp client/target/*.jar build/client.jar
+        rm -f client.jar
+        cp client/target/*.jar client.jar
     - name: Upload client JAR file
       uses: actions/upload-artifact@v2
       with:
         name: client
-        path: ./build/client.jar
+        path: ./client.jar
     - name: Copy server JAR file
       run: |
-        rm -f build/server.jar
-        cp server/target/*.jar build/server.jar
+        rm -f server.jar
+        cp server/target/*.jar server.jar
     - name: Upload server JAR file
       uses: actions/upload-artifact@v2
       with:
         name: server
-        path: ./build/server.jar
+        path: ./server.jar
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
