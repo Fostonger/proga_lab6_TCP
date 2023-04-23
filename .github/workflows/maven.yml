@@ -27,8 +27,12 @@ jobs:
         java-version: '19'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: Build lab6 with Maven
+      run: mvn -B package --file pom.xml
+    - name: Build server with Maven
       run: mvn -B package --file server/pom.xml
+    - name: Build client with Maven
+      run: mvn -B package --file client/pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
