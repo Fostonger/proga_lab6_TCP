@@ -45,7 +45,7 @@ jobs:
     - name: Copy server JAR file
       run: |
         rm -f server.jar
-        cp server/target/*.jar server.jar
+        cp server/target/*jar-with-dependencies.jar server.jar
     - name: Upload server JAR file
       uses: actions/upload-artifact@v2
       with:
