@@ -78,3 +78,11 @@ fabric.properties
 
 # Mac Directories Service
 */.DS_Store
+
+# unnecessary to trach
+script.txt
+routes.json
+logs/
+
+# compiled classes
+target/

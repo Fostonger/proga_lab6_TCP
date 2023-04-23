@@ -1,7 +1,5 @@
 package data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -14,8 +12,7 @@ public class Coordinates implements Serializable {
      * @param x nonnull int x of the class
      * @param y nonnull int x of the class, has to be not greater than 106
      */
-    @JsonCreator
-    public Coordinates(@JsonProperty("x") int x, @JsonProperty("y") Integer y) {
+    public Coordinates(int x, Integer y) {
         this.x = x;
         this.y = y;
     }

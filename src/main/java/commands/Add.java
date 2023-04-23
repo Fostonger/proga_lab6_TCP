@@ -4,6 +4,8 @@ import data.Route;
 import queueManager.PriorityQueueManageable;
 import utils.RouteCreatable;
 
+import java.sql.SQLException;
+
 /**
  * Add command
  */
@@ -23,8 +25,12 @@ public class Add extends AbstractCommand {
     @Override
     public String execute(String arg) {
         if (arg.equals("")) {
-            Route newRoute = routeFactory.createRoute(queueManager.getIds());
-            queueManager.add(newRoute);
+            Route newRoute = routeFactory.createRoute(queueManager.generateId());
+            try {
+                queueManager.add(newRoute);
+            } catch (SQLException e) {
+                return "couldn't add route: " + e.getMessage() + "\n";
+            }
             return "successfully added element!\n";
         } else {
             return "command was ran with incorrect argument, see 'help' for information\n";

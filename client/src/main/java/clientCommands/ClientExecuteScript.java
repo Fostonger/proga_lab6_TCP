@@ -2,18 +2,13 @@ package clientCommands;
 
 import clientInterpreter.ClientCommandInterpreter;
 import commands.AbstractCommand;
-import consoleReader.CommandReaderable;
+import consoleReader.CommandReadable;
 import consoleReader.OutputWritable;
 import consoleReader.PropertiesReceiver;
-import queueManager.PriorityQueueManageable;
-import transportShells.ServerResponse;
 import utils.ClientRouteFactory;
 import utils.InterpreterSwitchable;
-import utils.RequestSendable;
-import utils.RouteFactory;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -35,7 +30,7 @@ public class ClientExecuteScript extends AbstractCommand {
     @Override
     public String execute(String arg) {
         try {
-            CommandReaderable reader = new CommandReaderable() {
+            CommandReadable reader = new CommandReadable() {
                 private final Scanner commandScanner = new Scanner(new FileInputStream(arg));
                 public String getString() { return commandScanner.nextLine(); }
                 public int getInt() { return commandScanner.nextInt(); }

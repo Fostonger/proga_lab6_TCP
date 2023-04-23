@@ -4,6 +4,8 @@ import data.Route;
 import queueManager.PriorityQueueManageable;
 import utils.RouteCreatable;
 
+import java.sql.SQLException;
+
 /**
  * add_if_max command; adds value if its distance is greater than the max of the collection
  */
@@ -22,9 +24,13 @@ public class AddIfMax extends AbstractCommand {
     @Override
     public String execute(String arg) {
         if (arg.equals("")) {
-            Route newRoute = routeFactory.createRoute(queueManager.getIds());
-            if (queueManager.addRouteIfMax(newRoute)) {
-                return "successfully added new route!\n";
+            Route newRoute = routeFactory.createRoute(queueManager.generateId());
+            try {
+                if (queueManager.addRouteIfMax(newRoute)) {
+                    return "successfully added new route!\n";
+                }
+            } catch (SQLException e) {
+                return "couldn't add route: " + e.getMessage() + "\n";
             }
             return "the route is not greater than the greatest of the collection\n";
         } else {

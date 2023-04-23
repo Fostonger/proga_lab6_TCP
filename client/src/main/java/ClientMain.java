@@ -1,4 +1,4 @@
-import utils.*;
+import utils.ClientWorker;
 import java.net.Socket;
 
 public class ClientMain {

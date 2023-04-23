@@ -1,18 +1,16 @@
 package data;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.LocalDate;
 
-public class Route {
-    private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    private String name; //Поле не может быть null, Строка не может быть пустой
-    private Coordinates coordinates; //Поле не может быть null
-    private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    private Location from; //Поле может быть null
-    private Location to; //Поле не может быть null
-    private double distance; //Значение поля должно быть больше 1
+public class Route implements Comparable<Route> {
+    private final Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    private final String name; //Поле не может быть null, Строка не может быть пустой
+    private final Coordinates coordinates; //Поле не может быть null
+    private final java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    private final Location from; //Поле может быть null
+    private final Location to; //Поле не может быть null
+    private final double distance; //Значение поля должно быть больше 1
+    private final String author;
 
     /**
      * Base class that is stored in database
@@ -24,15 +22,9 @@ public class Route {
      * @param from location "from" of the route, can be null
      * @param name name of the route, nonnull parameter
      */
-    @JsonCreator
-    public Route(
-            @JsonProperty("id") Integer id,
-            @JsonProperty("coordinates") Coordinates coordinates,
-            @JsonProperty("creationDate") LocalDate creationDate,
-            @JsonProperty("distance") double distance,
-            @JsonProperty("to") Location to,
-            @JsonProperty("from") Location from,
-            @JsonProperty("name") String name) {
+    public Route(Integer id, Coordinates coordinates, LocalDate creationDate, double distance,
+            Location to, Location from, String name,
+            String author) {
         this.id = id;
         this.coordinates = coordinates;
         this.creationDate = creationDate;
@@ -40,6 +32,7 @@ public class Route {
         this.to = to;
         this.from = from;
         this.name = name;
+        this.author = author;
     }
     public String getName() {
         return name;
@@ -62,6 +55,7 @@ public class Route {
     public Location getTo() {
         return to;
     }
+    public String getAuthor() { return author; }
 
     /**
      * overridden method to use in need of printing the route
@@ -75,6 +69,12 @@ public class Route {
                 "creation date:\t\t" + creationDate.toString() + "\n" +
                 "from:\t\t\t\t" + ((from != null) ? ("\n" + from.toString()) : "null") + "\n" +
                 "to:\n" + to.toString() + "\n" +
-                "distance:\t\t\t" + distance + "\n";
+                "distance:\t\t\t" + distance + "\n" +
+                "author:\t\t\t\t" + author + "\n";
+    }
+
+    @Override
+    public int compareTo(Route o) {
+        return Integer.compare(this.id, o.id);
     }
 }

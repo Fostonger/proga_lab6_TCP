@@ -1,6 +1,7 @@
 package commands;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * command that returns string representing all possible commands' names and descriptions
@@ -15,13 +16,22 @@ public class Help extends AbstractCommand {
         super("help", "help","shows all possible commands");
         this.commands = commands;
     }
+
+    /**
+     * Could set filteredCommands on construction time, but that would leave some commands
+     * @param arg arguments of command or empty string if none is needed
+     * @return the set of available commands, without auth command
+     */
     @Override
     public String execute(String arg) {
         if (arg.equals("")) {
             StringBuilder helpString = new StringBuilder();
             int maxNameLength = maxNameLength();
             maxNameLength -= maxNameLength % 4;
-            for (AbstractCommand command : commands) {
+            var filteredCommands = commands.stream()
+                    .filter( command -> !command.getName().equals("auth"))
+                    .collect(Collectors.toMap(AbstractCommand::getName, command -> command));
+            for (AbstractCommand command : filteredCommands.values()) {
                 helpString.append(command.getInfoName())
                         .append(addTab(maxNameLength-command.getInfoName().length()))
                         .append(command.getDescription()).append("\n");
