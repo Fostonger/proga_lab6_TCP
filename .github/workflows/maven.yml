@@ -30,7 +30,8 @@ jobs:
     - name: Build lab6 with Maven
       run: mvn -B package --file pom.xml
     - name: Build server with Maven
-      run: mvn -B package --file server/pom.xml
+      run: mvn clean install
+           mvn -B package --file server/pom.xml
     - name: Build client with Maven
       run: mvn -B package --file client/pom.xml
 
