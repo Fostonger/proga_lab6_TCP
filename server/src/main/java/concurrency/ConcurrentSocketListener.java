@@ -33,6 +33,7 @@ public class ConcurrentSocketListener implements Runnable {
         ServerReadableWritable readerWriter = new ServerReaderWriter(key, logger);
         if (readerWriter.hasObject()) {
             ClientRequest request = (ClientRequest) readerWriter.getObject();
+            if (request == null) return;
             logger.info(
                     "extracted command from client \"" + request.getSession().getName() + "\": " +
                             request.getCommandShell().getCommandName()
