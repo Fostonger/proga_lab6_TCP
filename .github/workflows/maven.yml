@@ -36,21 +36,21 @@ jobs:
     - name: Copy client JAR file
       run: |
         rm -f build/client.jar
-        cp client/target/*.jar client.jar
+        cp client/target/*.jar build/client.jar
     - name: Upload client JAR file
       uses: actions/upload-artifact@v2
       with:
         name: client
-        path: ./client.jar
+        path: ./build/client.jar
     - name: Copy server JAR file
       run: |
         rm -f build/server.jar
-        cp server/target/*.jar server.jar
+        cp server/target/*.jar build/server.jar
     - name: Upload server JAR file
       uses: actions/upload-artifact@v2
       with:
         name: server
-        path: ./server.jar
+        path: ./build/server.jar
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
