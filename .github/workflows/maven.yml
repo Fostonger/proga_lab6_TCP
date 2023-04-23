@@ -40,6 +40,13 @@ jobs:
       with:
         name: client
         path: ./client.jar
+    - name: Copy server JAR file
+      run: cp server/target/*.jar server.jar
+    - name: Upload server JAR file
+      uses: actions/upload-artifact@v2
+      with:
+        name: server
+        path: ./server.jar
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
